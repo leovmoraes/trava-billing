@@ -31,10 +31,12 @@ O sistema é composto por:
    ```bash
    git clone [https://github.com/leovmoraes/trava-billing.git](https://github.com/leovmoraes/trava-billing.git)
    cd trava-billing
+```
 Execute o script de deploy:
 
-Bash
+```Bash
 python3 deploy_trava.py
+```
 Siga as instruções no terminal:
 
 Leia e aceite o disclaimer de segurança.
@@ -53,20 +55,9 @@ Corrija a causa do gasto excessivo.
 
 Vincule novamente uma conta de faturamento:
 
-Bash
+```Bash
 gcloud billing projects link ID_DO_PROJETO --billing-account=ID_DA_CONTA
+```
 Reinicie os serviços manualmente, se necessário.
 
 
----
-
-### 🚀 Agora é só subir!
-
-1.  Crie o arquivo: `nano README.md`
-2.  Cole o conteúdo acima e salve (`Ctrl+O`, `Enter`, `Ctrl+X`).
-3.  Execute o ciclo final do Git:
-
-```bash
-git add .
-git commit -m "docs: adicionando README profissional"
-git push -u origin main
