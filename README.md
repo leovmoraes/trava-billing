@@ -29,8 +29,9 @@ O sistema é composto por:
 
 1. Clone o repositório:
    ```bash
-   git clone [https://github.com/leovmoraes/trava-billing.git](https://github.com/leovmoraes/trava-billing.git)
-   cd trava-billing```
+   git clone https://github.com/leovmoraes/trava-billing.git
+   cd trava-billing
+   ```
 
 2. Execute o script de deploy:
 
@@ -45,11 +46,11 @@ python3 deploy_trava.py
 
 * Defina o limite de gastos em Reais (BRL).
 
-⚠️ Aviso de Segurança
+## ⚠️ Aviso de Segurança
 
 Este script é uma ferramenta poderosa. Ao desativar o faturamento, todos os recursos do projeto (VMs, Bancos de Dados, Clusters) são interrompidos imediatamente. Isso pode causar perda de dados efêmeros e indisponibilidade total dos serviços. Use com cautela e preferencialmente em ambientes de Sandbox ou Lab.
 
-🛠️ Reativação
+## 🛠️ Reativação
 Caso a trava seja acionada, para reativar o projeto:
 
 * Corrija a causa do gasto excessivo.
@@ -60,5 +61,3 @@ Caso a trava seja acionada, para reativar o projeto:
 gcloud billing projects link ID_DO_PROJETO --billing-account=ID_DA_CONTA
 ```
 * Reinicie os serviços manualmente, se necessário.
-
-
