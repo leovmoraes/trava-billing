@@ -37,7 +37,7 @@ O sistema é composto por:
 ```bash
 python3 deploy_trava.py
 ```
-Siga as instruções no terminal:
+3. Siga as instruções no terminal:
 
 * Leia e aceite o disclaimer de segurança.
 
@@ -46,18 +46,19 @@ Siga as instruções no terminal:
 * Defina o limite de gastos em Reais (BRL).
 
 ⚠️ Aviso de Segurança
+
 Este script é uma ferramenta poderosa. Ao desativar o faturamento, todos os recursos do projeto (VMs, Bancos de Dados, Clusters) são interrompidos imediatamente. Isso pode causar perda de dados efêmeros e indisponibilidade total dos serviços. Use com cautela e preferencialmente em ambientes de Sandbox ou Lab.
 
 🛠️ Reativação
 Caso a trava seja acionada, para reativar o projeto:
 
-Corrija a causa do gasto excessivo.
+* Corrija a causa do gasto excessivo.
 
-Vincule novamente uma conta de faturamento:
+* Vincule novamente uma conta de faturamento:
 
 ```Bash
 gcloud billing projects link ID_DO_PROJETO --billing-account=ID_DA_CONTA
 ```
-Reinicie os serviços manualmente, se necessário.
+* Reinicie os serviços manualmente, se necessário.
 
 
