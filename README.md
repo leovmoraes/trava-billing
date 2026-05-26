@@ -30,20 +30,20 @@ O sistema é composto por:
 1. Clone o repositório:
    ```bash
    git clone [https://github.com/leovmoraes/trava-billing.git](https://github.com/leovmoraes/trava-billing.git)
-   cd trava-billing
-```
-Execute o script de deploy:
+   cd trava-billing```
 
-```Bash
+2. Execute o script de deploy:
+
+```bash
 python3 deploy_trava.py
 ```
 Siga as instruções no terminal:
 
-Leia e aceite o disclaimer de segurança.
+* Leia e aceite o disclaimer de segurança.
 
-Informe o ID do projeto (ou use o ativo).
+* Informe o ID do projeto (ou use o ativo).
 
-Defina o limite de gastos em Reais (BRL).
+* Defina o limite de gastos em Reais (BRL).
 
 ⚠️ Aviso de Segurança
 Este script é uma ferramenta poderosa. Ao desativar o faturamento, todos os recursos do projeto (VMs, Bancos de Dados, Clusters) são interrompidos imediatamente. Isso pode causar perda de dados efêmeros e indisponibilidade total dos serviços. Use com cautela e preferencialmente em ambientes de Sandbox ou Lab.
