@@ -61,3 +61,11 @@ Caso a trava seja acionada, para reativar o projeto:
 gcloud billing projects link ID_DO_PROJETO --billing-account=ID_DA_CONTA
 ```
 * Reinicie os serviços manualmente, se necessário.
+
+## 📚 Referências e Créditos
+
+Este projeto foi inspirado e baseado nos conceitos apresentados no artigo:
+* **Automated GCP Killswitch: How to Avoid an Unexpected Google Cloud Bill** por Dazbo (Darren Lester) no Medium.
+* https://medium.com/google-cloud/how-to-avoid-a-massive-cloud-bill-41a76251caba
+
+Agradecimento ao autor por compartilhar o conhecimento base sobre automação de Billing no GCP.
