@@ -3,47 +3,48 @@ import json
 import os
 import functions_framework
 from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
 
 @functions_framework.cloud_event
 def disable_billing(cloud_event):
+    # 1. Decodifica os dados do Pub/Sub
     try:
-        # 1. Parsing dos dados do CloudEvent
-        pubsub_message = cloud_event.data["message"]
-        pubsub_data = base64.b64decode(pubsub_message["data"]).decode("utf-8")
-        data = json.loads(pubsub_data)
-        
-        # 2. Captura Robusta do Project ID
-        # Tenta: Variável de ambiente Gen2, depois Gen1, depois extrai do tópico Pub/Sub
-        project_id = os.environ.get('PROJECT_ID') or os.environ.get('GOOGLE_CLOUD_PROJECT')
-        
-        if not project_id:
-            # Se as variáveis falharem, extrai do 'source' do evento
-            # formato: //pubsub.googleapis.com/projects/ID_DO_PROJETO/topics/TOPICO
-            topic_path = cloud_event.get("source", "")
-            if "projects/" in topic_path:
-                project_id = topic_path.split("projects/")[1].split("/")[0]
-
-        print(f"📊 Monitoramento: {project_id} | Gasto: {data.get('costAmount')}")
-
-        if not project_id or project_id == "None":
-            raise ValueError("Não foi possível identificar o ID do projeto.")
-
-        if data.get('costAmount', 0) >= data.get('budgetAmount', 0):
-            if os.environ.get("SIMULATE_DEACTIVATION", "true").lower() == "true":
-                print(f"⚠️ MODO SIMULAÇÃO: {project_id} não desligado.")
-                return "OK"
-
-            # API DISCOVERY (Mesma lógica do gcloud que funcionou)
-            service = discovery.build('cloudbilling', 'v1', cache_discovery=False)
-            name = f'projects/{project_id}'
-            body = {'billingAccountName': ''} 
-
-            print(f"🚨 Desconectando faturamento de {name}...")
-            service.projects().updateBillingInfo(name=name, body=body).execute()
-            print(f"✅ SUCESSO: Projeto {project_id} desconectado.")
-        
+        pubsub_message = base64.b64decode(cloud_event.data["message"]["data"]).decode("utf-8")
+        data = json.loads(pubsub_message)
     except Exception as e:
-        print(f"❌ Erro fatal: {str(e)}")
-        return f"Erro: {str(e)}", 500
+        print(f"❌ Erro ao decodificar mensagem: {e}")
+        return
 
-    return "OK", 200
+    # 2. Extrai valores (Gasto atual e Limite definido)
+    cost_amount = data.get("costAmount", 0.0)
+    budget_amount = data.get("budgetAmount", 0.0)
+    
+    # 3. Identifica o Projeto
+    project_id = os.environ.get("PROJECT_ID")
+    if not project_id:
+        # Fallback para extrair do caminho do recurso se a env var falhar
+        project_id = cloud_event.get("source", "").split("/")[-1]
+
+    # LOG MELHORADO: O que você pediu
+    print(f"📊 Monitoramento: {project_id} | Gasto: {cost_amount} / Limite: {budget_amount}")
+
+    # 4. Lógica de Decisão
+    if cost_amount <= budget_amount:
+        print(f"✅ Gasto dentro do limite. Nenhuma ação necessária.")
+        return
+
+    # 5. Modo Matador ou Simulação
+    if os.environ.get("SIMULATE_DEACTIVATION") == "false":
+        print(f"🚨 Limite excedido! Desconectando faturamento de projects/{project_id}...")
+        try:
+            credentials = GoogleCredentials.get_application_default()
+            billing = discovery.build("cloudbilling", "v1", credentials=credentials)
+            billing.projects().updateBillingInfo(
+                name=f"projects/{project_id}", 
+                body={"billingAccountName": ""}
+            ).execute()
+            print(f"✅ SUCESSO: Projeto {project_id} desconectado.")
+        except Exception as e:
+            print(f"❌ ERRO ao tentar desconectar: {e}")
+    else:
+        print(f"⚠️ MODO SIMULAÇÃO: O projeto {project_id} seria desconectado agora.")

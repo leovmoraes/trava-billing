@@ -2,3 +2,5 @@ functions-framework==3.*
 google-cloud-billing==1.19.0
 google-api-python-client
 google-auth
+oauth2client
+functions-framework
