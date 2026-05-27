@@ -42,11 +42,11 @@ python3 deploy_trava.py
 ```
 3. Siga as instruções no terminal:
 
- a) Leia e aceite o disclaimer de segurança.
+* Leia e aceite o disclaimer de segurança.
 
- b) Informe o ID do projeto (ou use o ativo).
+* Informe o ID do projeto (ou use o ativo).
 
- d) Defina o limite de gastos em Reais (BRL).
+* Defina o limite de gastos em Reais (BRL).
 
 ## ⚠️ Aviso de Segurança
 
