@@ -46,15 +46,6 @@ python3 deploy_trava.py
 
 * Defina o limite de gastos em Reais (BRL).
 
-### ⚠️ Importante: Trava de Segurança
-Por padrão, este script opera em **Modo Simulação** (`SIMULATE_DEACTIVATION=true`) para evitar o desligamento acidental de projetos produtivos.
-
-Para ativar o desligamento real, você **DEVE** definir a variável de ambiente como `false` durante o deploy:
-
-```bash
---set-env-vars SIMULATE_DEACTIVATION=false
-```
-
 ## ⚠️ Aviso de Segurança
 
 Este script é uma ferramenta poderosa. Ao desativar o faturamento, todos os recursos do projeto (VMs, Bancos de Dados, Clusters) são interrompidos imediatamente. Isso pode causar perda de dados efêmeros e indisponibilidade total dos serviços. Use com cautela e preferencialmente em ambientes de Sandbox ou Lab.
