@@ -15,15 +15,17 @@ O **Trava Billing Deployer** é uma solução de automação FinOps para Google 
 O sistema é composto por:
 1.  **Cloud Billing Budget**: Monitora os custos em tempo real.
 2.  **Pub/Sub**: Canal de comunicação que recebe o alerta de estouro.
-3.  **Cloud Function (Python)**: Lógica de execução que remove o vínculo de faturamento do projeto.
-
-
+3.  **Cloud Functions 2ª Geração**, rodando sobre o Google Cloud Run.
+4.  **Segurança**: Uso de Service Accounts com escopo restrito e permissões explícitas de faturamento.
+5.  **Protocolo REST**: Comunicação via API Discovery para maior resiliência no desvínculo de billing.
 
 ## 📋 Pré-requisitos
 
-* Google Cloud SDK (`gcloud`) instalado e autenticado.
-* Permissões de `Owner` ou `Editor` no projeto alvo.
-* Acesso de `Billing Account Administrator` na conta de faturamento vinculada.
+* **Google Cloud SDK** (`gcloud`) instalado e autenticado ou rodar no **CloudShell**.
+* **Permissões de IAM**: O usuário que executa o deploy precisa ser `Owner` do projeto E `Billing Account Administrator` na conta pai.
+* **Service Account**: O script cria automaticamente a `trava-billing-sa` e atribui:
+    - No Projeto: `roles/billing.projectManager`
+    - Na Billing Account: `roles/billing.user`
 
 ## 💻 Como usar
 
@@ -40,11 +42,11 @@ python3 deploy_trava.py
 ```
 3. Siga as instruções no terminal:
 
-* Leia e aceite o disclaimer de segurança.
+ a) Leia e aceite o disclaimer de segurança.
 
-* Informe o ID do projeto (ou use o ativo).
+ b) Informe o ID do projeto (ou use o ativo).
 
-* Defina o limite de gastos em Reais (BRL).
+ d) Defina o limite de gastos em Reais (BRL).
 
 ## ⚠️ Aviso de Segurança
 
