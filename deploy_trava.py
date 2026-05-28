@@ -107,7 +107,7 @@ def main():
         print("🚀 Iniciando deploy da Cloud Function Gen2 (Aprox. 2 min)...")
         deploy_cmd = (
             f"gcloud functions deploy trava-billing-function --gen2 --region=us-central1 "
-            f"--runtime=python310 --source=. --entry-point=disable_billing "
+            f"--runtime=python314 --source=. --entry-point=disable_billing "
             f"--trigger-topic=trava-billing-topic --service-account={sa_email} "
             f"--set-env-vars PROJECT_ID={project_id},SIMULATE_DEACTIVATION=false --project={project_id} --quiet"
         )
