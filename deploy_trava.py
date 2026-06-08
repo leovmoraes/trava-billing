@@ -44,7 +44,6 @@ def main():
     project_id = input(f"\nID do projeto [{curr}] (Enter para confirmar): ").strip() or curr
 
     # --- FASE 2: HABILITAÇÃO DE APIs (Check Automático) ---
-    # Ativamos as APIs antes de validar faturamento para evitar que o script trave
     print("\n🚀 Preparando o terreno (Habilitando APIs necessárias)...")
     apis = (
         "cloudbilling.googleapis.com billingbudgets.googleapis.com "
@@ -76,9 +75,23 @@ def main():
     run_cmd(f"gcloud iam service-accounts create trava-billing-sa --project={project_id}", "Criando Service Account")
     
     run_cmd(f"gcloud projects add-iam-policy-binding {project_id} --member='serviceAccount:{sa_email}' --role='roles/billing.projectManager'", "Atribuindo Billing Manager")
-    
-    # IMPORTANTE: Binding de Billing User na Conta Pai para funcionamento da Gen2
     run_cmd(f"gcloud billing accounts add-iam-policy-binding {billing_id} --member='serviceAccount:{sa_email}' --role='roles/billing.user'", "Atribuindo Billing User na Conta Pai")
+
+    # 🔥 DUPLA BLINDAGEM ANTI-BLOQUEIO: Resolve restrições severas de IAM impostas por Org Policies
+    print("🔍 Configurando e blindando o ecossistema do Cloud Build Gen2...")
+    project_num = run_cmd(f"gcloud projects describe {project_id} --format='value(projectNumber)'")
+    compute_sa = f"{project_num}-compute@developer.gserviceaccount.com"
+    build_sa = f"{project_num}@cloudbuild.gserviceaccount.com"
+    
+    # 1. Garante que a conta padrão do Compute Engine (o operário) está ativa no projeto
+    run_cmd(f"gcloud iam service-accounts enable {compute_sa} --project={project_id}", "Garantindo que a conta Compute Engine está ativa")
+    
+    # 2. Injeta as permissões necessárias no operário (Compute Engine SA)
+    run_cmd(f"gcloud projects add-iam-policy-binding {project_id} --member='serviceAccount:{compute_sa}' --role='roles/artifactregistry.writer'", "Concedendo privilégio de escrita no Artifact Registry")
+    run_cmd(f"gcloud projects add-iam-policy-binding {project_id} --member='serviceAccount:{compute_sa}' --role='roles/storage.objectViewer'", "Concedendo privilégio de leitura de código no Storage")
+    
+    # 3. Injeta a permissão necessária no gerente (Cloud Build SA) caso ela tenha sido revogada pela Org Policy
+    run_cmd(f"gcloud projects add-iam-policy-binding {project_id} --member='serviceAccount:{build_sa}' --role='roles/cloudbuild.builds.builder'", "Concedendo privilégio de Builder para a conta do Cloud Build")
 
     run_cmd(f"gcloud pubsub topics create trava-billing-topic --project={project_id}", "Criando Tópico Pub/Sub")
 
@@ -96,7 +109,6 @@ def main():
                 do_deploy = False
                 print("➡️  Mantendo versão atual.")
     else:
-        # Se não encontrou (404), apenas avisa e segue para o deploy
         if "not found" in check_func_res.stderr.lower():
             print("➡️  Função não detectada. Iniciando instalação virgem...")
         else:

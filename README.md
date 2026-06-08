@@ -10,6 +10,9 @@ O **Trava Billing Deployer** é uma solução de automação FinOps para Google 
 * **Segurança**: Inclui um disclaimer obrigatório e modo de simulação por padrão.
 * **Arquitetura Moderna**: Utiliza Cloud Functions Gen2 e Eventarc para uma resposta rápida e escalável.
 
+### 🛡️ Diferenciais e Resiliência
+* **Compatível com Organizações Novas (Secure by Default):** O script detecta automaticamente restrições de herança de Org Policies (como a `constraints/iam.automaticIamGrantsForDefaultServiceAccounts`) e realiza o *Auto-Fix* das permissões das Contas de Serviço do Cloud Build e Compute Engine, garantindo o sucesso do deploy mesmo em ambientes restritos.
+
 ## 🏗️ Arquitetura
 
 O sistema é composto por:
