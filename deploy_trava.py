@@ -73,7 +73,6 @@ def main():
     # --- FASE 4: IDENTIDADE E ACESSO ---
     sa_email = f"trava-billing-sa@{project_id}.iam.gserviceaccount.com"
     run_cmd(f"gcloud iam service-accounts create trava-billing-sa --project={project_id}", "Criando Service Account")
-    
     run_cmd(f"gcloud projects add-iam-policy-binding {project_id} --member='serviceAccount:{sa_email}' --role='roles/billing.projectManager'", "Atribuindo Billing Manager")
     run_cmd(f"gcloud billing accounts add-iam-policy-binding {billing_id} --member='serviceAccount:{sa_email}' --role='roles/billing.user'", "Atribuindo Billing User na Conta Pai")
 
@@ -89,6 +88,7 @@ def main():
     # 2. Injeta as permissões necessárias no operário (Compute Engine SA)
     run_cmd(f"gcloud projects add-iam-policy-binding {project_id} --member='serviceAccount:{compute_sa}' --role='roles/artifactregistry.writer'", "Concedendo privilégio de escrita no Artifact Registry")
     run_cmd(f"gcloud projects add-iam-policy-binding {project_id} --member='serviceAccount:{compute_sa}' --role='roles/storage.objectViewer'", "Concedendo privilégio de leitura de código no Storage")
+    run_cmd(f"gcloud projects add-iam-policy-binding {project_id} --member='serviceAccount:{compute_sa}' --role='roles/logging.logWriter'", "Concedendo privilégio de escrita de Logs")
     
     # 3. Injeta a permissão necessária no gerente (Cloud Build SA) caso ela tenha sido revogada pela Org Policy
     run_cmd(f"gcloud projects add-iam-policy-binding {project_id} --member='serviceAccount:{build_sa}' --role='roles/cloudbuild.builds.builder'", "Concedendo privilégio de Builder para a conta do Cloud Build")
@@ -139,7 +139,7 @@ def main():
     else:
         run_cmd(f"gcloud billing budgets create --billing-account={billing_id} --display-name='trava-billing-{project_id}' --budget-amount={limit} --filter-projects=projects/{project_id} --threshold-rule=percent=1.0,basis=current-spend --notifications-rule-pubsub-topic=projects/{project_id}/topics/trava-billing-topic", "Criando Orçamento Sniper")
 
-    print(f"\n✅ SUCESSO ABSOLUTO! O projeto {project_id} está 100% blindado.\n")
+    print(f"\n✅ SUCESSO ABSOLUTO! O projeto {project_id} está com a trava aplicada.\n")
 
 if __name__ == "__main__":
     main()
